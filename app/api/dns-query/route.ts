@@ -1,4 +1,5 @@
-// DNS over HTTPS (DoH) Proxy for Vercel - Mullvad Only
+// DNS over HTTPS (DoH) Proxy for Vercel - Mullvad Family DNS
+// Based on working Cloudflare Workers implementation
 
 const MULLVAD_DOH = "https://family.dns.mullvad.net/dns-query"
 const DNS_MESSAGE_TYPE = "application/dns-message"
@@ -13,6 +14,7 @@ function getResponseHeaders(): HeadersInit {
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Accept",
     "Cache-Control": "public, max-age=300",
+    "X-Content-Type-Options": "nosniff",
   }
 }
 
@@ -26,56 +28,50 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`${MULLVAD_DOH}?dns=${dnsParam}`, {
+    const response = await fetch(`${MULLVAD_DOH}?dns=${encodeURIComponent(dnsParam)}`, {
       method: "GET",
       headers: {
         Accept: DNS_MESSAGE_TYPE,
+        "User-Agent": "DoH-Proxy/2.0", // Add User-Agent like CF version
       },
     })
 
     if (!response.ok) {
-      console.log("[v0] Mullvad GET failed:", response.status, response.statusText)
-      return new Response(`Mullvad error: ${response.status}`, { status: response.status })
+      return new Response(`DNS error: ${response.status}`, { status: response.status })
     }
 
-    const data = await response.arrayBuffer()
-    return new Response(data, {
+    return new Response(response.body, {
       status: 200,
       headers: getResponseHeaders(),
     })
   } catch (error) {
-    console.log("[v0] Mullvad GET error:", error)
-    return new Response(`Error: ${error}`, { status: 500 })
+    return new Response(`Error: ${error}`, { status: 502 })
   }
 }
 
 // Handle POST requests
 export async function POST(request: Request) {
-  const body = await request.arrayBuffer()
-
   try {
     const response = await fetch(MULLVAD_DOH, {
       method: "POST",
       headers: {
         Accept: DNS_MESSAGE_TYPE,
         "Content-Type": DNS_MESSAGE_TYPE,
+        "User-Agent": "DoH-Proxy/2.0", // Add User-Agent
       },
-      body: body,
+      body: request.body, // Stream directly, don't buffer with arrayBuffer()
     })
 
     if (!response.ok) {
-      console.log("[v0] Mullvad POST failed:", response.status, response.statusText)
-      return new Response(`Mullvad error: ${response.status}`, { status: response.status })
+      return new Response(`DNS error: ${response.status}`, { status: response.status })
     }
 
-    const data = await response.arrayBuffer()
-    return new Response(data, {
+    return new Response(response.body, {
       status: 200,
       headers: getResponseHeaders(),
     })
   } catch (error) {
-    console.log("[v0] Mullvad POST error:", error)
-    return new Response(`Error: ${error}`, { status: 500 })
+    return new Response(`Error: ${error}`, { status: 502 })
   }
 }
 
