@@ -128,7 +128,7 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-semibold text-zinc-50">{"Upstream Provider"}</h3>
                 <p className="text-sm text-zinc-400">
-                  {"Currently using Mullvad Family DNS for content filtering and privacy protection"}
+                  {"Currently using Control D Family DNS for content filtering and privacy protection"}
                 </p>
               </div>
             </CardContent>
