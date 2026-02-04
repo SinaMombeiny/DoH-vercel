@@ -1,7 +1,7 @@
 // DNS over HTTPS (DoH) Proxy for Vercel - Mullvad Family DNS
 // Based on working Cloudflare Workers implementation
 
-const MULLVAD_DOH = "https://freedns.controld.com/family"
+const MULLVAD_DOH = "https://family.dns.mullvad.net/dns-query"
 const DNS_MESSAGE_TYPE = "application/dns-message"
 
 export const runtime = "edge"
