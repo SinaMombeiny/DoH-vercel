@@ -41,9 +41,7 @@ A minimalist DNS-over-HTTPS proxy running on Vercel Edge Functions.
 - **Android (Intra, Nebulo):** Add custom DoH URL
 - **iOS (DNSCloak):** Add custom DoH resolver
 
-### Command Line Testing
 
-\`\`\`bash
 # Test with curl (GET method)
 curl -H "accept: application/dns-json" \
   "https://your-domain.vercel.app/api/dns-query?name=example.com&type=A"
