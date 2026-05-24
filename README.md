@@ -1,70 +1,107 @@
 # DNS over HTTPS (DoH) for Vercel
 
-A lightweight, high-performance DNS-over-HTTPS proxy running on **Vercel Edge Functions**.
+A minimalist DNS-over-HTTPS proxy running on Vercel Edge Functions.
 
 ## Features
 
-- ✅ Fully compliant with **RFC 8484**
-- ✅ Supports both **GET** and **POST** methods
-- ✅ Wireformat (`application/dns-message`) and JSON API support
-- ✅ CORS enabled (works directly in browsers)
-- ✅ Ultra-low latency thanks to Vercel's global Edge Network
-- ✅ Zero configuration deployment
-- ✅ Easy to use with custom domains
+- ✅ RFC 8484 compliant DNS-over-HTTPS implementation
+- ✅ Supports both GET and POST methods
+- ✅ Wireformat and JSON API support
+- ✅ CORS enabled for cross-origin requests
+- ✅ Deployed on Vercel Edge for global low-latency
+- ✅ Zero configuration required
 
-## Quick Start
+## Deployment
 
-1. Fork or clone this repository
-2. Deploy to Vercel (one-click or via Git)
-3. Your DoH resolver will be live at:  
-   `https://your-project.vercel.app/api/dns-query`
+1. **Deploy to Vercel:**
+   - Click the Deploy button or push to your connected Git repository
+   - Your DoH endpoint will be available at: `https://your-domain.vercel.app/api/dns-query`
 
-## Usage Examples
+2. **Use Your Custom Domain (Optional):**
+   - Add a custom domain in your Vercel project settings
+   - Your DoH endpoint will be: `https://your-domain.com/api/dns-query`
 
-### Browser Configuration
+## Usage
 
-- **Chrome / Edge**: Settings → Privacy and security → Use secure DNS → Custom provider
-- **Firefox**: Settings → Network Settings → Enable DNS over HTTPS → Custom
+### In Web Browsers
 
-Enter your URL: `https://your-project.vercel.app/api/dns-query`
+**Chrome/Edge/OpenWRT:**
+1. Go to Settings → Privacy and security → Security
+2. Enable "Use secure DNS"
+3. Select "With custom provider"
+4. Enter: `https://your-domain.vercel.app/api/dns-query`
 
-### Mobile Apps
-- **Android**: Intra, Nebulo, etc.
-- **iOS**: DNSCloak
+**Firefox:**
+1. Go to Settings → General → Network Settings
+2. Enable "Enable DNS over HTTPS"
+3. Select "Custom" and enter: `https://your-domain.vercel.app/api/dns-query`
 
-### Test with curl
-```bash
+### In Mobile Apps
+
+- **Android (Intra, Nebulo):** Add custom DoH URL
+- **iOS (DNSCloak):** Add custom DoH resolver
+
+
+# Test with curl (GET method)
 curl -H "accept: application/dns-json" \
-  "https://your-project.vercel.app/api/dns-query?name=example.com&type=A"
-```
+  "https://your-domain.vercel.app/api/dns-query?name=example.com&type=A"
 
-### Test with dig
-```bash
-dig @your-project.vercel.app example.com +https
-```
+# Test with dig (POST method)
+dig @1.1.1.1 example.com +https=your-domain.vercel.app/api/dns-query
+\`\`\`
 
 ## Configuration
 
-You can change the upstream DNS provider in `app/api/dns-query/route.ts`:
+The upstream DNS provider can be changed in `app/api/dns-query/route.ts`:
 
-```ts
-const DOH_UPSTREAM = 'https://security.cloudflare-dns.com/dns-query';
-```
+\`\`\`typescript
+// Change these URLs to use a different DoH provider:
+const DOH_PROVIDER = 'https://security.cloudflare-dns.com/dns-query'
+const DOH_JSON_PROVIDER = 'https://security.cloudflare-dns.com/dns-query'
+\`\`\`
 
-Popular options:
-- Cloudflare (`security.cloudflare-dns.com`)
-- Google (`dns.google`)
-- Quad9 (`dns.quad9.net`)
-- NextDNS, etc.
+**Popular DoH Providers:**
+- Cloudflare: `https://cloudflare-dns.com/dns-query`
+- Google: `https://dns.google/dns-query`
+- Quad9: `https://dns.quad9.net/dns-query`
+- NextDNS: `https://dns.nextdns.io/YOUR_ID`
 
-## Why This Project?
+## API Endpoints
 
-- Improve privacy by hiding DNS queries from your ISP
-- Bypass DNS-based censorship
-- Use your own domain for better trust & privacy
-- Fast global performance (Edge Network)
-- Completely free for personal use
+### GET Request (Wireformat)
+\`\`\`
+GET /api/dns-query?dns={base64url-encoded-dns-query}
+Accept: application/dns-message
+\`\`\`
+
+### POST Request (Wireformat)
+\`\`\`
+POST /api/dns-query
+Content-Type: application/dns-message
+Body: {binary-dns-query}
+\`\`\`
+
+### GET Request (JSON API)
+\`\`\`
+GET /api/dns-query?name=example.com&type=A
+Accept: application/dns-json
+\`\`\`
+
+## Why Use This?
+
+- **Privacy:** Encrypt your DNS queries to prevent ISP tracking
+- **Bypass Censorship:** If your ISP blocks known DoH providers, use your own
+- **Custom Domain:** Use your own domain name for added privacy
+- **Free Tier:** Vercel's free tier is generous for personal use
+- **Global Edge Network:** Fast DNS resolution from anywhere in the world
+
+## Technical Details
+
+- **Runtime:** Vercel Edge Functions
+- **Response Time:** ~50-200ms (depending on location)
+- **Supported Standards:** RFC 8484 (DNS Queries over HTTPS)
+- **CORS:** Enabled for browser compatibility
 
 ## License
 
-**0BSD** — Free for any purpose, no restrictions.
+0BSD - Free for any use without restrictions
