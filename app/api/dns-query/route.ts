@@ -5,7 +5,7 @@ const MULLVAD_DOH = "https://freedns.controld.com/family"
 const DNS_MESSAGE_TYPE = "application/dns-message"
 
 export const runtime = "edge"
-export const preferredRegion = "arn1"
+export const preferredRegion = "auto"
 
 function getResponseHeaders(): HeadersInit {
   return {
