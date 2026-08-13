@@ -101,7 +101,3 @@ Accept: application/dns-json
 - **Response Time:** ~50-200ms (depending on location)
 - **Supported Standards:** RFC 8484 (DNS Queries over HTTPS)
 - **CORS:** Enabled for browser compatibility
-
-## License
-
-0BSD - Free for any use without restrictions
