@@ -1,5 +1,5 @@
 const DNS_MIME = "application/dns-message";
-const UPSTREAM_DOH_ENDPOINT = "https://family.dns.mullvad.net/dns-query";
+const UPSTREAM_DOH_ENDPOINT = "https://freedns.controld.com/family";
 const DNS_PATH = "/dns-query";
 
 export default {
