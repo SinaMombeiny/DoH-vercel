@@ -1,6 +1,6 @@
 # DoH Worker
 
-A minimal DNS-over-HTTPS proxy for Cloudflare Workers. It forwards DNS queries to Mullvad Privacy DNS over HTTPS and exposes the worker at `/dns-query`.
+A minimal DNS-over-HTTPS proxy for Cloudflare Workers. It forwards DNS queries to Control D DNS over HTTPS and exposes the worker at `/dns-query`.
 
 ## Deploy
 
